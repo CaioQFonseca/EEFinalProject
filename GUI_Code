@@ -1,0 +1,693 @@
+from tkinter import *
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+#from matplotlib.figure import Figure
+import pandas as pd
+from PIL import ImageTk, Image
+
+
+class Principal():
+    def __init__(self,master):
+        self.master = master
+        self.master.title("Trabalho de Conclusao de Curso de Engenharia Eletrica")
+        self.img = ImageTk.PhotoImage(Image.open("ufcg2.png"))
+        self.panel = Label(self.master, image = self.img)
+        self.panel.pack(side = "left", fill = X)
+        self.capa1 = Label(self.master, text = "Curso de Graduacao em Engenharia Eletrica \n", bg = "light blue", fg = "black",font = ("Arial",16))
+        self.capa1.pack(fill = BOTH, expand = YES)
+        self.capa = Label(self.master, text = "Aluno: Caio Queiroz da Fonseca      Periodo: 2018.2 \n", bg = "light blue", fg = "black",font = ("Arial",16))
+        self.capa.pack(fill = BOTH, expand = YES)
+        self.capa2 = Label(self.master, text = "Professor Orientador: Danilo Freire \n\n", bg = "light blue", fg = "black",font = ("Arial",16))
+        self.capa2.pack(fill = BOTH, expand = YES)
+        self.tit1 = Label(self.master, text = "PowerCAS \n\n", bg = "light blue", fg = "blue",font = ("Arial", 20))
+        self.tit1.pack(fill = BOTH, expand = YES)
+        self.tit1 = Label(self.master, text = "Software que se propoe a resolver problemas numericos de: \n", bg = "light blue", fg = "black",font = ("Courier",14))
+        self.tit1.pack(fill = BOTH, expand = YES)
+        self.Tit2 = Label(self.master, text = "Analise de Sistemas Eletricos \n", bg = "light blue", fg = "red",font = ("Arial",16))
+        self.Tit2.pack(fill = BOTH, expand = YES)
+        self.Tit3 = Label(self.master, text = "Distribuicao de Sistemas Eletricos \n", bg = "light blue", fg = "green",font = ("Arial",16))
+        self.Tit3.pack(fill = BOTH, expand = YES)
+                
+        self.inf1 = Label(self.master, text = "Para selecionar o topico desejado, \n", fg = "black", bg = "light blue",font = ("Courier",12))
+        self.inf1.pack(fill=BOTH, expand = YES)
+        self.inf2 = Label(self.master, text = "basta pesquisar no menu localizado acima", fg = "black", bg = "light blue",font = ("Courier",12))
+        self.inf2.pack(fill=BOTH)
+        
+        
+        # ***** Status Bar *******
+        self.status = Label(self.master, text = "Trabalho de Conclusao de Curso de Caio Queiroz da Fonseca", relief = SUNKEN, anchor = W)
+        self.status.pack(side=BOTTOM, fill = X)
+        
+        # ****** Menu ********
+        self.menu = Menu(master)
+        self.master.config(menu= self.menu)
+        
+        self.subMenu = Menu(self.menu)
+        
+        
+        self.topicosMenu = Menu(self.menu)
+        self.menu.add_cascade(label = "Topicos", menu = self.topicosMenu)
+        self.analiseMenu = Menu(self.topicosMenu)
+        self.topicosMenu.add_cascade(label = "Analise de Sistemas Eletricos", menu = self.analiseMenu)
+        self.analiseMenu.add_command(label = "Parametros de Linhas de Transmissao", command = paramslinha)
+        self.analiseMenu.add_separator()
+        self.topicosMenu.add_separator()
+        self.analiseMenu.add_command(label = "Efeito Ferranti", command = efeito_ferranti)
+        self.distribuicaoMenu = Menu(self.topicosMenu)
+        self.topicosMenu.add_cascade(label = "Distribuicao de Energia Eletrica", menu = self.distribuicaoMenu)
+        self.topicosMenu.add_separator()
+        self.distribuicaoMenu.add_command(label = "Alocacao de Banco de Capacitores em Alimentadores", command = alocacao)
+        self.distribuicaoMenu.add_separator()
+        '''self.distribuicaoMenu.add_command(label = "Calculo de Queda de Tensao em Alimentadores", command = quedatensao)
+        self.distribuicaoMenu.add_separator()
+        self.distribuicaoMenu.add_command(label = "Calculo de Perdas em Alimentadores", command = perdasalim)'''
+        #self.distribuicaoMenu.add_separator()
+        self.distribuicaoMenu.add_command(label = "Previsao de Carga", command = previsao_carga)
+        
+        
+        
+        '''self.exitMenu = Menu(self.menu)
+        self.menu.add_cascade(label="Sair", menu = self.exitMenu)
+        self.exitMenu.add_command(label = "exit", command = quit)'''
+    
+
+
+#*********** Funcoes do topico Analise
+def paramslinha():
+	
+	def condu2():
+		def calculodmg():
+			vdist1 = float(dist1.get())
+			vdist2 = float(dist2.get())
+			vdist3 = float(dist3.get())
+			vespacamento = float(lespacamento.get())
+			vrs = float(raios.get())
+			rmg = ((vrs*vespacamento)**(2))**(0.25)
+			dmg = ((vdist1*vdist2*vdist3)**(1/3))
+			resultadormg = Label(root2, text = "O RMG e':  "+str(rmg), fg="blue").grid(row = 12, column = 3)
+			resultadodmg = Label(root2, text = "O DMG e':  "+str(dmg), fg="blue").grid(row = 13, column = 3)
+			Ln1 = math.log(1/vrs)
+			Ln2 = math.log(dmg)
+			Ln3 = math.log(dmg/rmg)
+			reatancia = 1000*((2*3.1415*60*((4*3.1415*(10**(-7)))/(2*3.1415)))*Ln3)
+			
+
+			def efeitoterra():
+				h1 = Label(root2, text = "Qual a altura dos condutores da Fase a:").grid(row = 15, column = 1)
+				altura = StringVar()
+				entrada8 = Entry(root2, textvariable = altura).grid(row = 15, column = 3)
+				h2 = Label(root2, text = "Qual a altura dos condutores da Fase b:").grid(row = 16, column = 1)
+				altura2 = StringVar()
+				entrada9 = Entry(root2, textvariable = altura2).grid(row = 16, column = 3)
+				h3 = Label(root2, text = "Qual a altura dos condutores da Fase c:").grid(row = 17, column = 1)
+				altura3 = StringVar()
+				entrada10 = Entry(root2, textvariable = altura3).grid(row = 17, column = 3)
+
+				
+
+				def capacfinal():
+					valtura = float(altura.get())
+					valtura2 = float(altura2.get())
+					valtura3 = float(altura3.get())
+
+					H12 = (((valtura+valtura2)**(2))+((vdist1)**(2)))**(1/2)
+					H23 = (((valtura3+valtura2)**(2))+((vdist2)**(2)))**(1/2)
+					H31 = (((valtura+valtura3)**(2))+((vdist3)**(2)))**(1/2)
+
+					Ln4 = math.log(((H12*H23*H31)**(1/3))/((valtura*valtura2*valtura3)**(1/3)))
+					capacitancia = 1000*(((2*3.1415*8.85*(10**(-12)))/(Ln3-Ln4)))
+					resultadoReatancia = Label(root2, text="A Reatancia serie da linha e' em Ohms/km:  " +str(reatancia), fg = "blue").grid(row=19, column = 3)
+					resultadocapacitancia = Label(root2, text="A Capacitancia da linha e' em F/km:  " +str(capacitancia), fg="blue").grid(row=20,column = 3)
+
+				botaofinal = Button(root2, text = "A Reatancia e Capacitancia e':", fg="red", command = capacfinal).grid(row = 18, column = 1)
+
+
+			def semefeitoterra():
+				capacitancia = 1000*((2*3.1415*8.85*(10**(-12)))/Ln3)
+				resultadocapacitancia = Label(root2, text="A Capacitancia da linha e' em F/km:  " +str(capacitancia), fg="blue").grid(row=16,column = 3)
+				resultadoReatancia = Label(root2, text="A Reatancia serie da linha e' em Ohms/km:  " +str(reatancia), fg = "blue").grid(row=15, column = 3)
+
+			titcapac = Label(root2, text = "Para o calculo da Capacitancia:", fg="red").grid(row = 14, column = 0)	
+			checapac1 = Checkbutton(root2, text = "Com Efeito do Plano-Terra", command = efeitoterra).grid(row = 14, column =1)
+			chacapac2 = Checkbutton(root2, text = "Desprezando Efeito Plano-Terra", command = semefeitoterra).grid(row = 14, column = 3)
+			
+
+		#****
+		ldistancia = Label(root2, text = "Distancia entre os condutores da fase a e b em metros:").grid(row = 6, column = 1)
+		dist1 = StringVar()
+		ldist = Entry(root2, textvariable = dist1).grid(row = 6, column = 3)
+		ldistanciabc = Label(root2, text = "Distancia entre os condutores da fase b e c em metros:").grid(row = 7, column = 1)
+		dist2 = StringVar()
+		ldist2 = Entry(root2, textvariable = dist2).grid(row = 7, column = 3)
+		ldistanciaca = Label(root2, text = "Distancia entre os condutores da fase c e a em metros:").grid(row = 8, column = 1)
+		dist3 = StringVar()
+		ldist3 = Entry(root2, textvariable = dist3).grid(row = 8, column = 3)
+		espacamento = Label(root2, text = "Espacamento entre os condutores de mesma fase em metros:").grid(row = 9, column =1)
+		lespacamento = StringVar()
+		entradaespac = Entry(root2, textvariable = lespacamento).grid(row = 9, column = 3)
+		lraiogeo = Label(root2, text = "Forneca o Rs do condutor (GMR):").grid(row = 10, column = 1)
+		raios = StringVar()
+		entradaRs = Entry(root2, textvariable = raios).grid(row = 10, column = 3) 
+		
+		#Calculo do raio e distancia geometrica
+		calculobotao = Button(root2, text = "Ok", command = calculodmg).grid(row = 11, column = 3)
+
+
+	def condu3():
+		def calculodmg():
+			vdist1 = float(dist1.get())
+			vdist2 = float(dist2.get())
+			vdist3 = float(dist3.get())
+			vespacamento = float(lespacamento.get())
+			vrs = float(rs.get())
+			rmg = ((vrs*vespacamento*vespacamento)**(3))**(1/9)
+			dmg = ((vdist1*vdist2*vdist3)**(1/3))
+			resultadormg = Label(root2, text = "O RMG e':  "+str(rmg), fg="green").grid(row = 12, column = 3)
+			resultadodmg = Label(root2, text = "O DMG e':  "+str(dmg), fg="green").grid(row = 13, column = 3)
+			Ln1 = math.log(1/vrs)
+			Ln2 = math.log(dmg)
+			Ln3 = math.log(dmg/rmg)
+			reatancia = 1000*((2*3.1415*60*((4*3.1415*(10**(-7)))/(2*3.1415)))*Ln3)
+			
+
+			def efeitoterra():
+				h1 = Label(root2, text = "Qual a altura dos condutores da Fase a:").grid(row = 15, column = 1)
+				altura = StringVar()
+				entrada8 = Entry(root2, textvariable = altura).grid(row = 15, column = 3)
+				h2 = Label(root2, text = "Qual a altura dos condutores da Fase b:").grid(row = 16, column = 1)
+				altura2 = StringVar()
+				entrada9 = Entry(root2, textvariable = altura2).grid(row = 16, column = 3)
+				h3 = Label(root2, text = "Qual a altura dos condutores da Fase c:").grid(row = 17, column = 1)
+				altura3 = StringVar()
+				entrada10 = Entry(root2, textvariable = altura3).grid(row = 17, column = 3)
+
+				
+
+				def capacfinal():
+					valtura = float(altura.get())
+					valtura2 = float(altura2.get())
+					valtura3 = float(altura3.get())
+
+					H12 = (((valtura+valtura2)**(2))+((vdist1)**(2)))**(1/2)
+					H23 = (((valtura3+valtura2)**(2))+((vdist2)**(2)))**(1/2)
+					H31 = (((valtura+valtura3)**(2))+((vdist3)**(2)))**(1/2)
+
+					Ln4 = math.log(((H12*H23*H31)**(1/3))/((valtura*valtura2*valtura3)**(1/3)))
+					capacitancia = 1000*(((2*3.1415*8.85*(10**(-12)))/(Ln3-Ln4)))
+					resultadoReatancia = Label(root2, text="A Reatancia serie da linha e' em Ohms/km:  " +str(reatancia), fg = "green").grid(row=19, column = 3)
+					resultadocapacitancia = Label(root2, text="A Capacitancia da linha e' em F/km:  " +str(capacitancia), fg="green").grid(row=20,column = 3)
+
+				botaofinal = Button(root2, text = "A Reatancia e Capacitancia e':", fg="red", command = capacfinal).grid(row = 18, column = 1)
+
+
+			def semefeitoterra():
+				capacitancia = 1000*((2*3.1415*8.85*(10**(-12)))/Ln3)
+				resultadocapacitancia = Label(root2, text="A Capacitancia da linha e' em F/km:  " +str(capacitancia), fg="green").grid(row=20,column = 0)
+				resultadoReatancia = Label(root2, text="A Reatancia serie da linha e' em Ohms/km:  " +str(reatancia), fg = "green").grid(row=19, column = 0)
+
+			titcapac = Label(root2, text = "Para o calculo da Capacitancia:", fg="red").grid(row = 14, column = 0)	
+			checapac1 = Checkbutton(root2, text = "Com Efeito do Plano-Terra", command = efeitoterra).grid(row = 14, column =1)
+			chacapac2 = Checkbutton(root2, text = "Desprezando Efeito Plano-Terra", command = semefeitoterra).grid(row = 14, column = 3)
+
+		#****
+		ldistancia = Label(root2, text = "Distancia entre os condutores da fase a e b em metros:").grid(row = 6, column = 1)
+		dist1 = StringVar()
+		ldist = Entry(root2, textvariable = dist1).grid(row = 6, column = 3)
+		ldistanciabc = Label(root2, text = "Distancia entre os condutores da fase b e c em metros:").grid(row = 7, column = 1)
+		dist2 = StringVar()
+		ldist2 = Entry(root2, textvariable = dist2).grid(row = 7, column = 3)
+		ldistanciaca = Label(root2, text = "Distancia entre os condutores da fase c e a em metros:").grid(row = 8, column = 1)
+		dist3 = StringVar()
+		ldist3 = Entry(root2, textvariable = dist3).grid(row = 8, column = 3)
+		espacamento = Label(root2, text = "Espacamento entre os condutores da fase em metros:").grid(row = 9, column =1)
+		lespacamento = StringVar()
+		entradaespac = Entry(root2, textvariable = lespacamento).grid(row = 9, column = 3)
+		lraiogeo = Label(root2, text = "Forneca o Rs do condutor (GMR):").grid(row = 10, column = 1)
+		rs = StringVar()
+		entradaRs = Entry(root2, textvariable = rs).grid(row = 10, column = 3) 
+
+		#Calculo do raio e distancia geometrica
+		calculobotao = Button(root2, text = "Ok", command = calculodmg).grid(row = 11, column = 3)
+
+	def condu4():
+		def calculodmg():
+			vdist1 = float(dist1.get())
+			vdist2 = float(dist2.get())
+			vdist3 = float(dist3.get())
+			vespacamento = float(lespacamento.get())
+			vrs = float(rs.get())
+			rmg = ((vrs*vespacamento*vespacamento*(vespacamento**(1/2)))**(4))**(1/16)
+			dmg = ((vdist1*vdist2*vdist3)**(1/3))
+			resultadormg = Label(root2, text = "O RMG e':  "+str(rmg),fg="red").grid(row = 12, column = 3)
+			resultadodmg = Label(root2, text = "O DMG e':  "+str(dmg), fg="red").grid(row = 13, column = 3)
+			Ln1 = math.log(1/vrs)
+			Ln2 = math.log(dmg)
+			Ln3 = math.log(dmg/rmg)
+			reatancia = 1000*((2*3.1415*60*((4*3.1415*(10**(-7)))/(2*3.1415)))*Ln3)
+			
+
+			def efeitoterra():
+				h1 = Label(root2, text = "Qual a altura dos condutor da Fase a:").grid(row = 15, column = 1)
+				altura = StringVar()
+				entrada8 = Entry(root2, textvariable = altura).grid(row = 15, column = 3)
+				h2 = Label(root2, text = "Qual a altura dos condutor da Fase b:").grid(row = 16, column = 1)
+				altura2 = StringVar()
+				entrada9 = Entry(root2, textvariable = altura2).grid(row = 16, column = 3)
+				h3 = Label(root2, text = "Qual a altura dos condutor da Fase c:").grid(row = 17, column = 1)
+				altura3 = StringVar()
+				entrada10 = Entry(root2, textvariable = altura3).grid(row = 17, column = 3)
+
+				
+
+				def capacfinal():
+					valtura = float(altura.get())
+					valtura2 = float(altura2.get())
+					valtura3 = float(altura3.get())
+
+					H12 = (((valtura+valtura2)**(2))+((vdist1)**(2)))**(1/2)
+					H23 = (((valtura3+valtura2)**(2))+((vdist2)**(2)))**(1/2)
+					H31 = (((valtura+valtura3)**(2))+((vdist3)**(2)))**(1/2)
+
+					Ln4 = math.log(((H12*H23*H31)**(1/3))/((valtura*valtura2*valtura3)**(1/3)))
+					capacitancia = 1000*(((2*3.1415*8.85*(10**(-12)))/(Ln3-Ln4)))
+					resultadoReatancia = Label(root2, text="A Reatancia serie da linha e' em Ohms/km:  " +str(reatancia), fg = "red").grid(row=19, column = 3)
+					resultadocapacitancia = Label(root2, text="A Capacitancia da linha e' em F/km:  " +str(capacitancia), fg="red").grid(row=20,column = 3)
+
+				botaofinal = Button(root2, text = "A Reatancia e Capacitancia e':", fg="red", command = capacfinal).grid(row = 18, column = 1)
+
+
+			def semefeitoterra():
+				capacitancia = 1000*((2*3.1415*8.85*(10**(-12)))/(Ln3))
+				resultadocapacitancia = Label(root2, text="A Capacitancia da linha e' em F/km:  " +str(capacitancia), fg="red").grid(row=20,column = 3)
+				resultadoReatancia = Label(root2, text="A Reatancia serie da linha e' em Ohms/km:  " +str(reatancia), fg = "red").grid(row=19, column = 3)
+
+			titcapac = Label(root2, text = "Para o calculo da Capacitancia:", fg="red").grid(row = 14, column = 0)	
+			checapac1 = Checkbutton(root2, text = "Com Efeito do Plano-Terra", command = efeitoterra).grid(row = 14, column =1)
+			chacapac2 = Checkbutton(root2, text = "Desprezando Efeito Plano-Terra", command = semefeitoterra).grid(row = 14, column = 3)
+		#****
+		
+		ldistancia = Label(root2, text = "Distancia entre condutor a e b em metros:").grid(row = 6, column = 1)
+		dist1 = StringVar()
+		ldist = Entry(root2, textvariable = dist1).grid(row = 6, column = 3)
+		ldistanciabc = Label(root2, text = "Distancia entre condutor b e c em metros:").grid(row = 7, column = 1)
+		dist2 = StringVar()
+		ldist2 = Entry(root2, textvariable = dist2).grid(row = 7, column = 3)
+		ldistanciaca = Label(root2, text = "Distancia entre condutor c e a em metros:").grid(row = 8, column = 1)
+		dist3 = StringVar()
+		ldist3 = Entry(root2, textvariable = dist3).grid(row = 8, column = 3)
+		espacamento = Label(root2, text = "Espacamento entre os condutores da fase em metros:").grid(row = 9, column =1)
+		lespacamento = StringVar()
+		entradaespac = Entry(root2, textvariable = lespacamento).grid(row = 9, column = 3)
+		lraiogeo = Label(root2, text = "Forneca o Rs do condutor (GMR):").grid(row = 10, column = 1)
+		rs = StringVar()
+		entradaRs = Entry(root2, textvariable = rs).grid(row = 10, column = 3)
+		
+		#Calculo do raio e distancia geometrica
+		calculobotao = Button(root2, text = "Ok", command = calculodmg).grid(row = 11, column = 3) 
+
+	#Criacao da janela
+	root2 = Toplevel(root)
+	root2.title("Parametros de Linhas de Transmissao")
+	# Botoes
+	botao = Button(root2, text = "2 Condutores por fase", fg = 'blue', command = condu2).grid(row = 5, column = 0)
+	botao2 = Button(root2, text = "3 Condutores por fase", fg = 'green',command = condu3).grid(row = 5, column = 1)
+	botao3 = Button(root2, text = "4 Condutores por fase", fg = 'red', command = condu4).grid(row = 5, column = 3)
+
+
+
+	# ***** Status Bar *******
+	#status = Label(root2, text = "Trabalho de Conclusao de Curso de Caio Queiroz da Fonseca", relief = SUNKEN, anchor = W)
+	#status.pack(side=BOTTOM, fill = X)	
+
+#******** 
+def efeito_ferranti():
+
+	def calculos():
+		def reator_calc():
+			vreator = float(reator.get())
+			Yreator = -complex(0,(((vreator)*(10**(6)))/((vtensao**(2))*(10**(6)))))
+			A2 = 1 
+			D2 = 1
+			C2 = Yreator
+			B2 = 0
+			matriz_ABCD = [[A*1+B*C2, B*1], [C*1+D*C2,D*1]]
+			
+			Vr2 = (vtensao/(3**(1/2)))/(matriz_ABCD[0][0])
+			Vrll2 = abs(Vr2*(3**(1/2))) 
+			porc_tensao = (Vrll2/vtensao)*100-100
+			label12 = Label(root2, text = "A Tensao no terminal receptor apos inser�ao do reator e':").grid(row = 15, column = 1)
+			label13 = Label(root2, text = str(Vrll2) + " kV").grid(row = 16, column = 2)
+
+			if Vrll2<vtensao:
+				porc_tensao = -porc_tensao
+				label14 = Label(root2, text = str(porc_tensao)+ "%  abaixo da Tensao nominal").grid(row = 17, column = 2)
+			else:
+				label14 = Label(root2, text = str(porc_tensao)+ "%  acima da Tensao nominal").grid(row = 17, column = 2)
+
+		#***	
+		vcomprimento = float(comprimento.get())
+		if vcomprimento<80:
+			label6 = Label(root2, text = "Linha Curta").grid(row = 7, column = 2)
+
+		else: 
+			vresistencia = float(resistencia.get())
+			vreatancia = float(reatancia.get())
+			vadmitancia = float(admitancia.get())
+			vcomprimento = float(comprimento.get())
+			vtensao = float(tensao.get())
+
+			Z = complex(vresistencia*vcomprimento, vreatancia*vcomprimento)
+			Y = complex(0,vadmitancia*vcomprimento)
+			A = 1 + (Y*Z)/2
+			B = Z
+			D = A
+			C = Y*(1 + (Y*Z)/4)
+			label6 = Label(root2, text = "Parametros ABCD:").grid(row = 7, column = 1)
+			label7 = Label(root2, text = "A: "+ str(A) +"  B:  "+ str(B)).grid(row = 8, column = 2)
+			label11 = Label(root2, text = "  C:  "+ str(C) +"  D:  "+ str(D)).grid(row = 9, column = 2)
+
+			Vr = (vtensao/(3**(1/2)))/A
+			Vrll = abs(Vr*(3**(1/2)))
+			porc_tensao = (Vrll/vtensao)*100-100
+			label8 = Label(root2, text = "A Tensao no terminal receptor em aberto e':").grid(row = 10, column = 1)
+			label9 = Label(root2, text = str(Vrll) + " kV,  " + str(porc_tensao) + "%  acima da Tensao nominal").grid(row = 11, column = 2)
+			label10 = Label(root2, text = "Para evitar tensoes elevadas no receptor, deve-se inserir um reator no terminal receptor:").grid(row = 12, column = 1)
+			label11 = Label(root2, text = "Insira o valor da Potencia Reativa do reator que deseja instalar em Mvar:").grid(row = 13, column = 1)
+			reator = StringVar()
+			entrada6 = Entry(root2, textvariable = reator).grid(row=13, column = 3)
+			botao5 = Button(root2, text = "Ok", command = reator_calc).grid(row = 14, column = 3)
+			
+
+	
+	#Criacao da janela
+	root2 = Toplevel(root)
+	root2.title("Efeito Ferranti")
+	# Entradas
+	label1 = Label(root2, text = "Tensao da Transmissao em kV:")
+	label1.grid(row=1, column = 1)
+	tensao = StringVar()
+	entrada1 = Entry(root2, textvariable = tensao).grid(row = 1, column = 3)
+	label2 = Label(root2, text = "Resistencia do Condutor em Ohms/km a 60Hz:")
+	label2.grid(row=2, column = 1)
+	resistencia = StringVar()
+	entrada2 = Entry(root2, textvariable = resistencia).grid(row = 2, column = 3)
+	label3 = Label(root2, text = "Reatancia do Condutor em Ohms/km:").grid(row = 3, column = 1)
+	reatancia = StringVar()
+	entrada3 = Entry(root2, textvariable = reatancia).grid(row = 3, column = 3)
+	label4 = Label(root2, text = "Admitancia em S/km:").grid(row = 4, column = 1)
+	admitancia = StringVar()
+	entrada4 = Entry(root2, textvariable = admitancia).grid(row = 4, column = 3)
+	label5 = Label(root2, text = "Comprimento da Linha em km:").grid(row = 5, column = 1)
+	comprimento = StringVar()
+	entrada5 = Entry(root2, textvariable = comprimento).grid(row = 5, column = 3)
+
+	botao = Button(root2, text = "Ok", command = calculos).grid(row = 6, column = 3)
+
+
+
+#**************************************
+
+
+
+
+#********* Funcoes do topico Distribuicao 
+
+def previsao_carga():
+                     
+    def recomecar():
+        def quit(self):
+            self.root.destroy() 
+        
+        previsao_carga()
+        
+        
+    def plotar():
+        vn_dados = int(n_dados.get())
+        vpotencia = [0]*vn_dados
+        vtempo = [0]*vn_dados
+        
+        for i in range(vn_dados):
+            vpotencia[i] = float(potencia[i].get())
+            vtempo[i] = float(tempo[i].get())
+        
+        X_grid = np.arange(min(vtempo), max(vtempo), 0.01)
+        X_grid = X_grid.reshape((len(X_grid), 1))
+        plt.scatter(vtempo, vpotencia)
+        plt.plot(vtempo, vpotencia)
+        plt.title('Dados sem previsao de carga')
+        plt.xlabel('Tempo')
+        plt.ylabel('Potencia')
+        fig = plt.figure()
+        label = Label(root2, text = 'Grafico sem previsao de carga').grid(row = vn_dados+7, column = 3)
+        plt.show()
+        
+    def plot_previsao():
+        
+        def previsao_horas():
+            def svr():
+                vmatrix = int(matrix.get())
+                # Numero horas
+                prev_horas1 = [len(X)+i+1 for i in range(vmatrix)]
+                vprev_horas = prev_horas1
+                prev_horas1 = np.array(prev_horas1)
+                prev_horas1 = np.reshape(prev_horas1, (-1,1))
+                #Previsao                
+                from sklearn.preprocessing import StandardScaler
+                sc_Xr = StandardScaler()
+                sc_yr = StandardScaler()
+                sc_zr = StandardScaler()
+                Xr = sc_Xr.fit_transform(X)
+                yr = sc_yr.fit_transform(y)
+                prev_horas1 = sc_Xr.fit_transform(prev_horas1)
+                # Fitting SVR to the dataset
+                from sklearn.svm import SVR
+                regressorsvr = SVR(kernel = 'rbf', C=10, gamma=10)
+                regressorsvr.fit(Xr,yr)
+                #plot
+                y_pred1 = sc_yr.inverse_transform(regressorsvr.predict(prev_horas1))
+                                
+                plt.scatter(vprev_horas,y_pred1, color = 'red')
+                plt.plot(vprev_horas,y_pred1, color ='blue')
+                plt.title('Potencia Vs Tempo (SVR)')
+                plt.xlabel('Tempo')
+                plt.ylabel('Potencia')
+                plt.show()
+                
+            
+                print("Se deseja prever os valores para essas horas: " +str(vprev_horas))
+                print("Os valores previstos foram:" + str(y_pred1))
+                
+                
+                
+            def poly_reg():
+                vmatrix = int(matrix.get())
+                # Numero horas
+                prev_horas = [len(y)+1+i for i in range(vmatrix)]
+                #Previsao
+                prev_horas = np.array(prev_horas)
+                prev_horas = np.reshape(prev_horas, (-1,1))
+                
+                from sklearn.linear_model import LinearRegression
+                from sklearn.preprocessing import PolynomialFeatures
+                poly_reg = PolynomialFeatures(degree = 3) 
+                X_poly = poly_reg.fit_transform(X)
+                lin_reg_2 = LinearRegression()
+                lin_reg_2.fit(X_poly, y)  
+
+                y_pred = lin_reg_2.predict(poly_reg.fit_transform(prev_horas))
+                plt.scatter(prev_horas,y_pred, color = 'red')
+                plt.plot(prev_horas,y_pred)
+                plt.title('Potencia Vs Tempo (Polynomial Regression)')
+                plt.xlabel('Tempo')
+                plt.ylabel('Potencia')
+                plt.show()
+                
+                print("Se deseja prever os valores para essas horas: " +str(prev_horas))
+                print("Os valores previstos foram: " + str(y_pred))
+                
+                          
+                
+            labelz = Label(root2, text = "Qual o algoritmo que deseja utilizar:").grid(row=vn_dados+11,column = 2)
+            check2 = Checkbutton(root2, text = "Regressao Polinomial", fg = 'red', command = poly_reg).grid(row = vn_dados+12,column = 1)
+            check3 = Checkbutton(root2, text = "SVR", fg = 'blue', command = svr).grid(row = vn_dados+12,column = 3)
+            
+            
+            
+            
+            
+        vn_dados = int(n_dados.get())
+        vpotencia = [0]*vn_dados
+        vtempo = [0]*vn_dados
+        
+        
+        for i in range(vn_dados):
+            vpotencia[i] = float(potencia[i].get())
+            vtempo[i] = float(tempo[i].get())
+        y = np.array(vpotencia)
+        X = np.array(vtempo)
+        X = np.reshape(X, (-1,1))
+        y = np.reshape(y, (-1,1))
+        
+        #algoritmo polynomial
+        from sklearn.linear_model import LinearRegression
+        from sklearn.preprocessing import PolynomialFeatures
+        poly_reg = PolynomialFeatures(degree = 10) 
+        X_poly = poly_reg.fit_transform(X)
+        lin_reg_2 = LinearRegression()
+        lin_reg_2.fit(X_poly, y) 
+        lin_reg_2.predict(poly_reg.fit_transform(X))
+        plt.scatter(X,y, color = 'red')
+        plt.plot(X,lin_reg_2.predict(poly_reg.fit_transform(X)), color = 'blue')
+        plt.title('Potencia Vs Tempo (Polynomial Regression)')
+        plt.xlabel('Tempo')
+        plt.ylabel('Potencia')
+        plt.show()
+        fig = plt.figure()
+        
+        #algoritmo SVR
+        # Feature Scaling
+        from sklearn.preprocessing import StandardScaler
+        sc_X = StandardScaler()
+        sc_y = StandardScaler()
+        Xr = sc_X.fit_transform(X)
+        yr = sc_y.fit_transform(y)
+        # Fitting SVR to the dataset
+        from sklearn.svm import SVR
+        regressorsvr = SVR(kernel = 'rbf', C=10, gamma=10)
+        regressorsvr.fit(Xr,yr)
+        plt.scatter(X,y, color = 'red')
+        plt.plot(X,sc_y.inverse_transform(regressorsvr.predict(Xr)), color ='blue')
+        plt.title('Potencia Vs Tempo (SVR)')
+        plt.xlabel('Tempo')
+        plt.ylabel('Potencia')
+        plt.show()
+        fig = plt.figure()
+        
+        
+        #Previsao
+        label3 = Label(root2, text = "Quantas horas deseja prever:").grid(row=vn_dados+8,column = 1)
+        matrix = StringVar()
+        entradahora = Entry(root2, textvariable = matrix).grid(row = vn_dados+8, column = 4)
+        buttonz = Button(root2, text = "Ok", command = previsao_horas).grid(row = vn_dados+9, column = 4)
+        
+       
+    
+            
+    def colunas_dados():
+        vn_dados = int(n_dados.get())
+        label = Label(root2, text = "Potencia na barra:").grid(row=4,column = 3)
+        label2 = Label(root2, text = "Tempo:").grid(row = 4,column = 4)
+        for i in range(vn_dados):
+            potencia[i] = StringVar()
+            entrada2 = Entry(root2, textvariable = potencia[i]).grid(row = i+5, column = 3)
+            tempo[i] = StringVar()
+            entrada3 = Entry(root2, textvariable = tempo[i]).grid(row = i+5, column = 4)
+        check = Checkbutton(root2, text = "Plotar dados sem Previsao de Carga", command = plotar).grid(row = vn_dados+6,column = 1)
+        check2 = Checkbutton(root2, text = "Plotar dados com Previsao de Carga", command = plot_previsao).grid(row = vn_dados+6,column = 3)
+        
+        
+    root2 = Toplevel(root)
+    root2.title("Previsao de Carga")
+    # Entradas
+    label = Label(root2, text = "Sao utilizados algoritmos de Aprendizado de Maquina para Previsao de Carga")
+    label.grid(row=1, column = 1)
+    label1 = Label(root2, text = "Digite o numero de dados que ira inserir:")
+    label1.grid(row=2, column = 1)
+    n_dados = StringVar()
+    entrada1 = Entry(root2, textvariable = n_dados).grid(row = 2, column = 3)
+    botao = Button(root2, text = "Ok", command = colunas_dados).grid(row = 3, column = 3)
+    botao2 = Button(root2, text = "Recomecar", command = recomecar).grid(row = 3, column = 4)
+    potencia =[0]*100
+    tempo = [0]*100
+    matrix = [0]*1000
+    
+		
+
+    
+#*********
+
+def alocacao():
+
+		
+	def fornbarras():
+		vnbarras = int(nbarras.get())
+		for i in range(0,vnbarras):
+			label = Label(root4, text = "Potencia em MVA da barra acumulada no final do trecho:").grid(row = i+10,column = 1)
+			potenciab[i] = StringVar()
+			entrada = Entry(root4, textvariable = potenciab[i]).grid(row = i+10, column = 3)
+
+		botaook = Button(root4, text = "Calculo", command = trifasico).grid(row = vnbarras+11, column = 3)
+
+	def trifasico():
+	
+		vcomprimento = float(comprimento.get())
+		vfp = math.acos(float(fatorpotencia.get()))
+		vfpgrau = math.sin(vfp) 
+		vnbarras = int(nbarras.get())
+		perdast = [0]*vnbarras
+		vqc = (float(Qc.get()))
+
+		for i in range(vnbarras):
+			vpotenciab[i] = float(potenciab[i].get())
+		for i in range(vnbarras):
+			perdast[i] = sum(vpotenciab[i:vnbarras])
+
+		perdastotal = [0]*vnbarras
+		
+		for i in range(vnbarras):
+			perdastotal[i] = vcomprimento*((vfpgrau*perdast[i])**(2))
+		
+		vperdastotal = sum(perdastotal)
+		perdascombctotal = [0]*vnbarras
+		perdascombc = [0]*vnbarras
+		for i in range(vnbarras):
+			perdascombc[i] = (vcomprimento*(((vfpgrau*perdast[i])-vqc)**(2)))
+
+		for i in range(vnbarras):
+			perdascombctotal[i] = (sum(perdascombc[:i+1]))+(vperdastotal - sum(perdastotal[:i+1]))
+			
+
+		barra = perdascombctotal.index(min(perdascombctotal))
+
+		label7 = Label(root4, text = "A Alocacao otima do Banco de Capacitores e' na barra " +str(barra+1), fg = "blue", font = (14) ).grid(row = vnbarras+15, column = 1)
+			
+		
+	root4 = Toplevel(root)
+	root4.title("Alocacao Otima de Banco de Capacitores em um Alimentador")
+	label = []
+	perdast =[0]*100
+	potenciab = [0]*100
+	vpotenciab = [0]*100
+	label1 = Label(root4, text = "Para definir o alimentador siga as instrucoes a seguir:", fg = "black", bg = "light green", font = ("Courier",16)).grid(row  = 0, column = 1)
+	label2 = Label(root4, text = "Quantas barras tem o Alimentador:").grid(row = 1, column = 1)
+	nbarras = StringVar()
+	entrada1 = Entry(root4, textvariable = nbarras).grid(row = 1, column = 3)
+	label3 = Label(root4, text = "Qual a distancia entre as barras em km:").grid(row = 2, column = 1)
+	comprimento = StringVar()
+	entrada2 = Entry(root4, textvariable = comprimento).grid(row = 2, column = 3)
+	label4 = Label(root4, text = "Qual a resistencia do condutor utilizado em Ohms por km:").grid(row = 3, column = 1)
+	resistencia = StringVar()
+	entrada4 = Entry(root4, textvariable = resistencia).grid(row = 3, column = 3)
+	label4 = Label(root4, text = "Qual a reatancia do condutor utilizado em Ohms por km:").grid(row = 4, column = 1)
+	reatancia = StringVar()
+	entrada3 = Entry(root4, textvariable = reatancia).grid(row = 4, column = 3)
+	label5 = Label(root4, text = "Qual o fator de potencia do alimentador:").grid(row = 5, column = 1)
+	fatorpotencia = StringVar()
+	entrada4 = Entry(root4, textvariable = fatorpotencia).grid(row = 5, column = 3)
+	label6 = Label(root4, text = "Qual a Potencia Reativa em Mvar do Banco de Capacitores:").grid(row = 6, column = 1)
+	Qc = StringVar()
+	entrada5 = Entry(root4, textvariable = Qc).grid(row = 6, column = 3)
+	botao = Button(root4, text = "Ok", command = fornbarras).grid(row = 7, column = 3)
+
+
+#*******
+
+        
+root = Tk()
+main = Principal(root)
+root.mainloop()
+
+
+
+
